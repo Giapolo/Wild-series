@@ -1,5 +1,6 @@
-// Some data to make the trick
 import type { RequestHandler } from "express";
+// Some data to make the trick
+import categoryRepository from "./categoryRepository";
 
 const categories = [
   {
@@ -16,8 +17,10 @@ const categories = [
 
 /* Here you code */
 
-const browse: RequestHandler = (req, res) => {
-  res.json(categories);
+const browse: RequestHandler = async (req, res) => {
+  const categoriesFromDB = await categoryRepository.readAll();
+
+  res.json(categoriesFromDB);
 };
 
 const read: RequestHandler = (req, res) => {

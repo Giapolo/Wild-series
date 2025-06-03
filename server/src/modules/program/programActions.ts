@@ -1,4 +1,9 @@
 // Some data to make the trick
+import programRepository from "./programRepository";
+
+// Declare the action
+
+import type { RequestHandler } from "express";
 
 const programs = [
   {
@@ -23,19 +28,16 @@ const programs = [
   },
 ];
 
-// Declare the action
+const browse: RequestHandler = async (req, res) => {
+  const programsFromDB = await programRepository.readAll();
 
-import type { RequestHandler } from "express";
-
-const browse: RequestHandler = (req, res) => {
   if (req.query.q != null) {
-    const filteredPrograms = programs.filter((program) =>
+    const filteredPrograms = programsFromDB.filter((program) =>
       program.synopsis.includes(req.query.q as string),
     );
-
     res.json(filteredPrograms);
   } else {
-    res.json(programs);
+    res.json(programsFromDB);
   }
 };
 
@@ -48,9 +50,6 @@ const read: RequestHandler = (req, res) => {
   } else {
     res.sendStatus(404);
   }
-  console.info(req.params);
-
-  res.send(`Hello Program ${req.params.id} !`);
 };
 
 // Export it to import it somewhere else
